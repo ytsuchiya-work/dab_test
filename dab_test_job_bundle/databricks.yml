@@ -1,0 +1,43 @@
+# Declarative Automation Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
+bundle:
+  name: "dab_test_job_bundle"
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+permissions:
+  # - group_name: users
+  #   level: CAN_MANAGE
+
+  # tenantContributorの代わり
+  # - group_name: dab_test
+  #   level: CAN_MANAGE
+
+sync:
+  paths:
+    - .
+  include:
+    - src/**/*.py
+    - README.md
+
+targets:
+  # The 'dev' target, for development purposes. This target is the default.
+  dev:
+    mode: production
+    default: true
+    workspace:
+      host: https://adb-7405605463330453.13.azuredatabricks.net
+      root_path: /Workspace/Users/yusuke.tsuchiya@databricks.com/.bundle/${bundle.name}/${bundle.target}
+
+  # The 'prod' target, used for production deployment.
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405605463330453.13.azuredatabricks.net
+      # We always use /Users/yusuke.tsuchiya@databricks.com for all resources to make sure we only have a single copy.
+      root_path: /Users/yusuke.tsuchiya@databricks.com/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      # This runs as yusuke.tsuchiya@databricks.com in production. We could also use a service principal here,
+      # see https://docs.databricks.com/dev-tools/bundles/permissions.html.
+      user_name: yusuke.tsuchiya@databricks.com

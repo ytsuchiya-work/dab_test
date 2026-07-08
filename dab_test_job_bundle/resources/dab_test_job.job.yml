@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    dab_test_job:
+      name: dab_test_job_
+      max_concurrent_runs: 1
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
+      tasks:
+        - task_key: dab_test
+          notebook_task:
+            notebook_path: ../src/notebooks/dab_output.py
+          run_if: ALL_SUCCESS
